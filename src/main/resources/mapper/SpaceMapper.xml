@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.conference.dao.SpaceDao" >
+  <resultMap id="BaseResultMap" type="com.conference.entity.Space" >
+    <id column="space_id" property="spaceId" jdbcType="INTEGER" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result column="space_name" property="spaceName" jdbcType="VARCHAR" />
+    <result column="space_picture" property="spacePicture" jdbcType="VARCHAR" />
+    <result column="space_area" property="spaceArea" jdbcType="REAL" />
+    <result column="space_capacity" property="spaceCapacity" jdbcType="INTEGER" />
+    <result column="space_price" property="spacePrice" jdbcType="REAL" />
+  </resultMap>
+  
+    <resultMap id="spaceTypetResultMap" type="com.conference.entity.Space" >
+	    <id column="space_id" property="spaceId" jdbcType="INTEGER" />
+	    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+	    <result column="space_name" property="spaceName" jdbcType="VARCHAR" />
+	    <result column="space_picture" property="spacePicture" jdbcType="VARCHAR" />
+	    <result column="space_area" property="spaceArea" jdbcType="REAL" />
+	    <result column="space_capacity" property="spaceCapacity" jdbcType="INTEGER" />
+	    <result column="space_price" property="spacePrice" jdbcType="REAL" />
+	    
+	    <association property="type" javaType="com.conference.entity.Type">
+	    	<id column="type_id" property="typeId" jdbcType="INTEGER" />
+	    	<result column="type_name" property="typeName" jdbcType="VARCHAR" />
+	    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    space_id, type_id,space_name, space_picture, space_area, space_capacity, space_price
+  </sql>
+  
+  <select id="findByID" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hgj_space
+    where space_id = #{spaceId,jdbcType=INTEGER}
+  </select>
+  
+    <select id="findSpTypeByID" resultMap="spaceTypetResultMap" parameterType="java.lang.Integer" >
+    select 
+		hgj_space.*,type_name
+		from hgj_space INNER JOIN hgj_type ON hgj_space.type_id=hgj_type.type_id
+    where space_id = #{spaceId,jdbcType=INTEGER} 
+  </select>
+  
+  
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from hgj_space
+    where space_id = #{spaceId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.conference.entity.Space" >
+    insert into hgj_space (space_id, type_id, space_name,space_picture, 
+      space_area, space_capacity, space_price
+      )
+    values (#{spaceId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER},#{spaceName,jdbcType=VARCHAR}, #{spacePicture,jdbcType=VARCHAR}, 
+      #{spaceArea,jdbcType=REAL}, #{spaceCapacity,jdbcType=INTEGER}, #{spacePrice,jdbcType=REAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.conference.entity.Space" >
+    insert into hgj_space
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="spaceId != null" >
+        space_id,
+      </if>
+      <if test="typeId != null" >
+        type_id,
+      </if>
+       <if test="spaceName != null" >
+        space_name,
+      </if>
+      <if test="spacePicture != null" >
+        space_picture,
+      </if>
+      <if test="spaceArea != null" >
+        space_area,
+      </if>
+      <if test="spaceCapacity != null" >
+        space_capacity,
+      </if>
+      <if test="spacePrice != null" >
+        space_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="spaceId != null" >
+        #{spaceId,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="spaceName != null" >
+        #{spaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="spacePicture != null" >
+        #{spacePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="spaceArea != null" >
+        #{spaceArea,jdbcType=REAL},
+      </if>
+      <if test="spaceCapacity != null" >
+        #{spaceCapacity,jdbcType=INTEGER},
+      </if>
+      <if test="spacePrice != null" >
+        #{spacePrice,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateByPrimaryKeySelective" parameterType="com.conference.entity.Space" >
+    update hgj_space
+    <set >
+      <if test="typeId != null" >
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="spaceName != null" >
+        space_picture = #{spaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="spacePicture != null" >
+        space_picture = #{spacePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="spaceArea != null" >
+        space_area = #{spaceArea,jdbcType=REAL},
+      </if>
+      <if test="spaceCapacity != null" >
+        space_capacity = #{spaceCapacity,jdbcType=INTEGER},
+      </if>
+      <if test="spacePrice != null" >
+        space_price = #{spacePrice,jdbcType=REAL},
+      </if>
+    </set>
+    where space_id = #{spaceId,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.conference.entity.Space" >
+    update hgj_space
+    set type_id = #{typeId,jdbcType=INTEGER},
+    space_name = #{spaceName,jdbcType=VARCHAR},
+      space_picture = #{spacePicture,jdbcType=VARCHAR},
+      space_area = #{spaceArea,jdbcType=REAL},
+      space_capacity = #{spaceCapacity,jdbcType=INTEGER},
+      space_price = #{spacePrice,jdbcType=REAL}
+    where space_id = #{spaceId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findAll" resultMap="BaseResultMap">
+		select * from hgj_space
+	</select>
+	
+	<!-- 分页查询所有用户  返回数据集-->
+  <select id="selectSpaceByPage" parameterType="Map" resultMap="BaseResultMap">
+  	select * from hgj_space 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 分页查询  返回总记录数-->
+  <select id="selectSpacePageCount"  resultType="Integer">
+  	select count(1) from hgj_space
+  </select>
+  
+  
+  
+   <!--模糊分页查询所有用户  返回数据集-->
+  <select id="selectSpacePageByValue" parameterType="Map" resultMap="BaseResultMap">
+  	
+  	select * from hgj_space where space_name like concat(concat(#{value},'%')) 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 模糊分页查询  返回总记录数-->
+  <select id="selectSpacePageCountByValue" parameterType="java.lang.String" resultType="Integer">
+  	select count(1) from hgj_space where space_name like '${value}%'
+  </select>
+  
+</mapper>

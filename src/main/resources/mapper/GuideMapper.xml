@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.conference.dao.GuideDao" >
+  <resultMap id="BaseResultMap" type="com.conference.entity.Guide" >
+    <id column="guide_id" property="guideId" jdbcType="INTEGER" />
+    <result column="guide_title" property="guideTitle" jdbcType="VARCHAR" />
+    <result column="guide_picture" property="guidePicture" jdbcType="VARCHAR" />
+    <result column="guide_author" property="guideAuthor" jdbcType="VARCHAR" />
+    <result column="guide_time" property="guideTime" jdbcType="DATE" />
+    <result column="guide_content" property="guideContent" jdbcType="VARCHAR" />
+    <result column="guide_type" property="guideType" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    guide_id, guide_title, guide_picture, guide_author, guide_time, guide_content, guide_type
+  </sql>
+  
+  <select id="findByID" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hgj_guide
+    where guide_id = #{guideId,jdbcType=INTEGER}
+  </select>
+  
+  
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from hgj_guide
+    where guide_id = #{guideId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.conference.entity.Guide" >
+    insert into hgj_guide (guide_id, guide_title, guide_picture, 
+      guide_author, guide_time, guide_content, 
+      guide_type)
+    values (#{guideId,jdbcType=INTEGER}, #{guideTitle,jdbcType=VARCHAR}, #{guidePicture,jdbcType=VARCHAR}, 
+      #{guideAuthor,jdbcType=VARCHAR}, #{guideTime,jdbcType=DATE}, #{guideContent,jdbcType=VARCHAR}, 
+      #{guideType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.conference.entity.Guide" >
+    insert into hgj_guide
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="guideId != null" >
+        guide_id,
+      </if>
+      <if test="guideTitle != null" >
+        guide_title,
+      </if>
+      <if test="guidePicture != null" >
+        guide_picture,
+      </if>
+      <if test="guideAuthor != null" >
+        guide_author,
+      </if>
+      <if test="guideTime != null" >
+        guide_time,
+      </if>
+      <if test="guideContent != null" >
+        guide_content,
+      </if>
+      <if test="guideType != null" >
+        guide_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="guideId != null" >
+        #{guideId,jdbcType=INTEGER},
+      </if>
+      <if test="guideTitle != null" >
+        #{guideTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="guidePicture != null" >
+        #{guidePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="guideAuthor != null" >
+        #{guideAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="guideTime != null" >
+        #{guideTime,jdbcType=DATE},
+      </if>
+      <if test="guideContent != null" >
+        #{guideContent,jdbcType=VARCHAR},
+      </if>
+      <if test="guideType != null" >
+        #{guideType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateByPrimaryKeySelective" parameterType="com.conference.entity.Guide" >
+    update hgj_guide
+    <set >
+      <if test="guideTitle != null" >
+        guide_title = #{guideTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="guidePicture != null" >
+        guide_picture = #{guidePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="guideAuthor != null" >
+        guide_author = #{guideAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="guideTime != null" >
+        guide_time = #{guideTime,jdbcType=DATE},
+      </if>
+      <if test="guideContent != null" >
+        guide_content = #{guideContent,jdbcType=VARCHAR},
+      </if>
+      <if test="guideType != null" >
+        guide_type = #{guideType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where guide_id = #{guideId,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="com.conference.entity.Guide" >
+    update hgj_guide
+    set guide_title = #{guideTitle,jdbcType=VARCHAR},
+      guide_picture = #{guidePicture,jdbcType=VARCHAR},
+      guide_author = #{guideAuthor,jdbcType=VARCHAR},
+      guide_time = #{guideTime,jdbcType=DATE},
+      guide_content = #{guideContent,jdbcType=VARCHAR},
+      guide_type = #{guideType,jdbcType=VARCHAR}
+    where guide_id = #{guideId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findAll" resultMap="BaseResultMap">
+		select * from hgj_guide
+	</select>
+	
+	<!-- 分页查询所有用户  返回数据集-->
+  <select id="selectGuideByPage" parameterType="Map" resultMap="BaseResultMap">
+  	select * from hgj_guide 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 分页查询  返回总记录数-->
+  <select id="selectGuidePageCount"  resultType="Integer">
+  	select count(1) from hgj_guide
+  </select>
+  
+  
+  
+   <!--模糊分页查询所有用户  返回数据集-->
+  <select id="selectGuidePageByValue" parameterType="Map" resultMap="BaseResultMap">
+  	
+  	select * from hgj_guide where guide_title like concat(concat(#{value},'%')) 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select> 
+  
+  <!-- 模糊分页查询  返回总记录数-->
+  <select id="selectGuidePageCountByValue" parameterType="java.lang.String" resultType="Integer">
+  	select count(1) from hgj_guide where guide_title like '${value}%'
+  </select>
+  
+</mapper>

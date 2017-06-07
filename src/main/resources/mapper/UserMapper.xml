@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.conference.dao.UserMapper" >
+  
+  <resultMap id="BaseResultMap" type="com.conference.entity.User" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
+    <result column="user_sex" property="userSex" jdbcType="VARCHAR" />
+    <result column="user_age" property="userAge" jdbcType="INTEGER" />
+    <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+    
+    <!-- 一对多 -->
+    <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+    <collection property="schemesList" ofType="Scheme">
+    	<id column="scheme_id" property="schemeId" jdbcType="INTEGER" />
+    	<result column="scheme_city" property="schemeCity" jdbcType="VARCHAR" />
+    	<result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    	<result column="scheme_duration" property="schemeDuration" jdbcType="INTEGER" />
+    	<result column="scheme_number" property="schemeNumber" jdbcType="INTEGER" />
+    	<result column="scheme_budget" property="schemeBudget" jdbcType="REAL" />
+    	<result column="scheme_check" property="schemeCheck" jdbcType="VARCHAR" />
+    	<result column="scheme_time" property="schemeTime" jdbcType="DATE" />
+    </collection>
+    
+  </resultMap>
+  
+  
+
+  
+  <!-- 用户注册sql -->
+  <insert id="insertUser" parameterType="User">
+  	insert into hgj_user(user_name,user_password,user_sex,user_age,user_email) values(#{userName},#{userPassword},#{userSex},#{userAge},#{userEmail})
+  </insert>
+  <!-- 用户登录sql -->
+  <select id="login" parameterType="User" resultMap="BaseResultMap">
+  	select * from hgj_user where user_name=#{userName} and user_password=#{userPassword}
+  </select>
+  <!-- 查询所有用户sql -->
+  <select id="findAll" resultMap="BaseResultMap">
+  	select * from hgj_user
+  </select>
+  <!-- 删除用户sql -->
+  <delete id="deleteById" parameterType="Integer">
+  	delete from hgj_user where user_id = #{userId}
+  </delete>
+  <!-- 更新用户sql -->
+  <update id="update" parameterType="User">
+  	 update hgj_user set user_name = #{userName},user_password = #{userPassword},user_sex = #{userSex},user_age = #{userAge},user_email = #{userEmail} where user_id = #{userId}
+  </update>
+  <!-- 根据id查用户sql -->
+  <select id="findById" parameterType="Integer" resultMap="BaseResultMap">
+  	select * from hgj_user where user_id = #{userId}
+  </select>
+  
+  <!-- 根据用户名模糊查询sql -->
+  <select id="findByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select * from hgj_user where user_name like '${value}%'
+  </select>
+  
+  
+  
+  <!-- 分页查询所有用户  返回数据集-->
+  <select id="selectUserByPage" parameterType="Map" resultMap="BaseResultMap">
+  	select * from hgj_user 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 分页查询  返回总记录数-->
+  <select id="selectUserPageCount"  resultType="Integer">
+  	select count(1) from hgj_user
+  </select>
+  
+  
+  
+   <!--模糊分页查询所有用户  返回数据集-->
+  <select id="selectUserPageByValue" parameterType="Map" resultMap="BaseResultMap">
+  	
+  	select * from hgj_user where user_name like concat(concat(#{value},'%')) 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 模糊分页查询  返回总记录数-->
+  <select id="selectUserPageCountByValue" parameterType="java.lang.String" resultType="Integer">
+  	select count(1) from hgj_user where user_name like '${value}%'
+  </select>
+  
+  
+ 
+</mapper>

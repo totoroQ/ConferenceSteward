@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.conference.dao.ConferenceMapper" >
+  <resultMap id="BaseResultMap" type="com.conference.entity.Conference" >
+    <id column="conference_id" property="conferenceId" jdbcType="INTEGER" />
+    <result column="conference_name" property="conferenceName" jdbcType="VARCHAR" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="conference_picture" property="conferencePicture" jdbcType="VARCHAR" />
+    <result column="conference_city" property="conferenceCity" jdbcType="VARCHAR" />
+    <result column="conference_duration" property="conferenceDuration" jdbcType="INTEGER" />
+    <result column="conference_amount" property="conferenceAmount" jdbcType="INTEGER" />
+    <result column="conference_number" property="conferenceNumber" jdbcType="INTEGER" />
+    <result column="conference_price" property="conferencePrice" jdbcType="REAL" />
+    <result column="conference_identification" property="conferenceIdentification" jdbcType="VARCHAR" />
+  </resultMap>
+  
+
+  <sql id="Base_Column_List" >
+    conference_id, conference_name,type_name, conference_picture, conference_city, conference_duration, conference_amount,
+    conference_number, conference_price, conference_identification
+  </sql>
+  
+  <select id="findAll"  resultMap="BaseResultMap">
+		 select   conference_id, conference_name,type_name, conference_picture, conference_city, conference_duration, conference_amount,
+    conference_number, conference_price, conference_identification  from hgj_conference
+	</select> 
+	
+	<select id="findByID" parameterType="Integer" resultType="Conference">
+		select conference_id, conference_name,type_name, conference_picture, conference_city, conference_duration, conference_amount,
+    		conference_number, conference_price, conference_identification  from hgj_conference where conference_id  = #{conferenceId ,jdbcType=INTEGER}
+	</select>
+	
+
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hgj_conference  where conference_id  = #{conferenceId,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="addConference" parameterType="com.conference.entity.Conference" >
+     insert into hgj_conference ( conference_name,type_name, conference_picture, 
+      conference_city, conference_duration, conference_amount, conference_number, 
+      conference_price, conference_identification) 
+    values (#{conferenceName,jdbcType=VARCHAR},#{typeName,jdbcType=VARCHAR}, #{conferencePicture,jdbcType=VARCHAR}, 
+      #{conferenceCity,jdbcType=VARCHAR}, #{conferenceDuration,jdbcType=VARCHAR},#{conferenceAmount,jdbcType=INTEGER},#{conferenceNumber,jdbcType=INTEGER}, 
+      #{conferencePrice,jdbcType=REAL}, #{conferenceIdentification,jdbcType=VARCHAR})
+  </insert>
+  
+   <update id="updateByPrimaryKey" parameterType="com.conference.entity.Conference" >
+    update hgj_conference
+     set 
+       conference_name = #{conferenceName,jdbcType=VARCHAR},
+       type_name = #{type_name,jdbcType=VARCHAR},
+     
+       conference_picture = #{conferencePicture,jdbcType=VARCHAR},
+       conference_city = #{conferenceCity,jdbcType=VARCHAR},
+       conference_duration = #{conferenceDuration,jdbcType=VARCHAR},
+       conference_amount = #{conferenceAmount,jdbcType=INTEGER},
+       conference_number = #{conferenceNumber,jdbcType=INTEGER},
+       conference_price = #{conferencePrice,jdbcType=REAL},
+       conference_identification = #{conferenceIdentification,jdbcType=VARCHAR}
+       where conference_id = #{conferenceId,jdbcType=INTEGER}
+  </update>
+  
+  
+  
+   <!-- 分页查询所有用户  返回数据集-->
+  <select id="selectConferenceByPage" parameterType="Map" resultMap="BaseResultMap">
+  	select * from hgj_conference 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 分页查询  返回总记录数-->
+  <select id="selectConferencePageCount"  resultType="Integer">
+  	select count(1) from hgj_conference
+  </select>
+  
+  
+   <!--模糊分页查询所有用户  返回数据集-->
+  <select id="selectConferencePageByValue" parameterType="Map" resultMap="BaseResultMap">
+  	
+  	select * from hgj_conference where conference_name like concat(concat(#{value},'%')) 
+  	<if test="start!=null and size!=null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 模糊分页查询  返回总记录数-->
+  <select id="selectConferencePageCountByValue" parameterType="java.lang.String" resultType="Integer">
+  	select count(1) from hgj_conference where conference_name like '${value}%'
+  </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.conference.dao.AdminMapper" >
+  <resultMap id="BaseResultMap" type="com.conference.entity.Admin" >
+    <id column="admin_id" property="adminId" jdbcType="INTEGER" />
+    <result column="admin_name" property="adminName" jdbcType="VARCHAR" />
+    <result column="admin_password" property="adminPassword" jdbcType="VARCHAR" />
+    <result column="admin_sex" property="adminSex" jdbcType="VARCHAR" />
+    <result column="admin_age" property="adminAge" jdbcType="INTEGER" />
+    <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  
+  <!-- 管理员注册sql -->
+  <insert id="insertAdmin" parameterType="Admin">
+  	insert into hgj_admin(admin_name,admin_password,admin_sex,admin_age,admin_email) values(#{adminName},#{adminPassword},#{adminSex},#{adminAge},#{adminEmail})
+  </insert>
+  <!-- 管理员登录sql -->
+  <select id="login" parameterType="Admin" resultMap="BaseResultMap">
+  	select * from hgj_admin where admin_name=#{adminName} and admin_password=#{adminPassword}
+  </select>
+  
+   
+  
+  
+  
+  
+</mapper>
